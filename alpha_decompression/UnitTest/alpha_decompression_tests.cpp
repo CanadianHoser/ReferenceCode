@@ -222,7 +222,7 @@ TEST(decompress, expansion_token_beyond_buffer_bounds_results_in_NULL)
 	STRCMP_EQUAL(NULL, decompress("HelloWa3", smallbuf, 4));
 }
 
-TEST(decompress, atmosic_decompression_string)
+TEST(decompress, sample_decompression_string)
 {
     char decompress_this[] = "c3j3d8js3bsj2k4bo3k";
 	STRCMP_EQUAL("cdejkldefghijkjstubsjkklmnbopqk", decompress(decompress_this, buffer, 256));
