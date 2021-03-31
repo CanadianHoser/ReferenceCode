@@ -1,0 +1,4 @@
+ cd cpputest
+ ./autogen.sh
+ ./configure
+ make
