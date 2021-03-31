@@ -28,7 +28,6 @@ extern void free2d(arr_t arr);
 
 #ifdef UNIT_TEST
 #define STATIC_INLINE
-extern size_t malloc_buffer_size;
 #else
 #define STATIC_INLINE static inline
 #endif

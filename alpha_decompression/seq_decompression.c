@@ -106,7 +106,7 @@ char *decompress(char const *comp_str, char *output_buffer,
 	memset(output_buffer, 0, output_buffer_size);
 
     do {
-    	if(next_token = find_next_decompress_token(token, &location_in_token))
+    	if((next_token = find_next_decompress_token(token, &location_in_token)))
     	{
     		// Copy over data that doesn't need to be decompressed from the start of the token
     		if (location_in_token < output_buffer_len) {

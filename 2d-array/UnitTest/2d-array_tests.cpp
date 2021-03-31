@@ -41,6 +41,7 @@ TEST(2d_array_tests, call_main)
 	LONGS_EQUAL(0, my_main());
 }
 
+#ifdef __USE_MALLOC_REPLACEMENT__
 extern "C" {
 extern size_t malloc_buffer_size;
 }
@@ -74,6 +75,7 @@ TEST(my_malloc_tests, my_malloc_increments_sbrk_address)
 	LONGS_EQUAL(0x10, malloc_buffer_size);
 }
 
+// NOTE: This test fails on MacOS because sbrk has been deprecated and not fully functional
 TEST(my_malloc_tests, my_malloc_with_negative_value_decrements_sbrk_address)
 {
 	void * updated_sbrk = my_malloc(0x10);
@@ -94,23 +96,28 @@ TEST(my_malloc_tests, my_malloc_with_zero_size_does_not_increase_memory_usage)
 	LONGS_EQUAL(init_sbrk, updated_sbrk);
 	LONGS_EQUAL(0x0, malloc_buffer_size);
 }
+#endif
 
 TEST_GROUP(alloc_2d)
 {
 	void *init_sbrk;
 
 	void setup() {
+#ifdef __USE_MALLOC_REPLACEMENT__
 		init_sbrk = sbrk(0);
+#endif
 	}
 	void teardown() {
+#ifdef __USE_MALLOC_REPLACEMENT__
     	brk(init_sbrk);
     	malloc_buffer_size = 0;
+#else
+#endif
 	}
 };
 
 TEST(alloc_2d, test)
 {
-	// This doesn't do anything yet
 	arr_t arr = alloc2d(3, 4);
 	const int rows = 3;
 	const int cols = 4;
@@ -126,4 +133,5 @@ TEST(alloc_2d, test)
 	POINTERS_EQUAL(arr[1], &arr[1][0]);
 	POINTERS_EQUAL(arr[2], &arr[2][0]);
 	POINTERS_EQUAL((((base_t*)(arr+rows))+cols*1+0), &arr[1][0]);
+    free2d(arr);
 }

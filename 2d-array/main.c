@@ -13,10 +13,12 @@
 #include <string.h>
 #include "two_d_array.h"
 
-#ifdef DOUBLE_SUBSCR
+#ifdef __USE_MALLOC_REPLACEMENT__
+// NOTE: the malloc replacment uses deprecated function sbrk and brk.  These work on linux, but
+//       fail to execute properly on a MAC, resulting in UT failures
 size_t malloc_buffer_size = 0;
 
-void *my_malloc(int size)
+void *my_malloc(size_t size)
 {
 	void *block_addr = sbrk(size);
 	void * updated = sbrk(0);
@@ -24,14 +26,25 @@ void *my_malloc(int size)
 	return block_addr;
 }
 
-
 void my_free(void *data)
 {
 	void * curr_top = sbrk(0);
 	memset(data, 0, malloc_buffer_size);
 	brk(curr_top - malloc_buffer_size);
-	void * updated_top = sbrk(0);
+	void * updated = sbrk(0);
 }
+
+#else
+void *my_malloc(size_t size) {
+    return malloc(size);
+}
+void my_free(void *data)
+{
+    free(data);
+}
+#endif /* __USE_MALLOC_REPLACEMENT__ */
+
+#ifdef DOUBLE_SUBSCR
 
 STATIC_INLINE
 void set(arr_t a, size_t i, size_t j, base_t val) {
