@@ -80,8 +80,7 @@ char * expandBuffer(char *buffer, unsigned int bufferSize, char const *comp_str)
  *******************************************************************************
  * @brief Decompress incoming string.
  * ***[TODO] Please define expectations or limitations:
- * CURRENT_LIMITATIONS: This does not yet properly guarantee against
- *                      buffer overrun for all cases
+ * CURRENT_LIMITATIONS: 
  *
  * Example:      "a3g4j4g4d"
  * Output:       abcghijjklmghijd
@@ -106,7 +105,7 @@ char *decompress(char const *comp_str, char *output_buffer,
 	memset(output_buffer, 0, output_buffer_size);
 
     do {
-    	if((next_token = find_next_decompress_token(token, &location_in_token)))
+    	if((next_token = find_next_decompress_token(token, &location_in_token)) != NULL)
     	{
     		// Copy over data that doesn't need to be decompressed from the start of the token
     		if (location_in_token < output_buffer_len) {
@@ -120,7 +119,7 @@ char *decompress(char const *comp_str, char *output_buffer,
     		expandBuffer(expansion_buffer, 32, next_token);
     		token_decompressed_length = strlen(expansion_buffer);
 
-    		if(token_decompressed_length > output_buffer_len)
+    		if(token_decompressed_length > output_buffer_len - 1)
     		{
     			return NULL;
     		}
