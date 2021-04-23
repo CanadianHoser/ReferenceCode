@@ -152,6 +152,16 @@ TEST(expandBuffer, zero_expansion_buffer_results_in_NULL)
 	STRCMP_EQUAL(NULL, expandBuffer(&buffer[0], 0, "a3llo"));
 }
 
+TEST(expandBuffer, zero_expansion_in_token_strips_out_token)
+{
+	STRCMP_EQUAL(NULL, expandBuffer(&buffer[0], 32, "a0"));
+}
+
+TEST(expandBuffer, expansion_by_one_in_token_strips_out_expansion)
+{
+	STRCMP_EQUAL("a", expandBuffer(&buffer[0], 32, "a1"));
+}
+
 TEST_GROUP(decompress)
 {
 	char buffer[256];

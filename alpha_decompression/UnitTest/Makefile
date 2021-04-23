@@ -28,7 +28,7 @@ endif
 #
 SRC_DIRS ?= ../
 # WKH TODO: This finds both the production and UT files, resulting in the UT files being compiled twice
-SRC_FILES := $(shell find $(SRC_DIRS)./UnitTest -prune  -name "*.cpp" -or -name "*.c" -or -name "*.s")
+SRC_FILES := $(shell find $(SRC_DIRS) -path ./UnitTest -prune  -name "*.cpp" -or -name "*.c" -or -name "*.s")
 
 # --- TEST_SRC_FILES and TEST_SRC_DIRS ---
 # Test files are always included in the build.
