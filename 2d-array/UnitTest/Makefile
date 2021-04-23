@@ -28,7 +28,7 @@ endif
 #
 SRC_DIRS ?= ../
 # WKH TODO: This finds both the production and UT files, resulting in the UT files being compiled twice
-SRC_FILES := $(shell find $(SRC_DIRS) ./UnitTest -prune -name "*.cpp" -or -name "*.c" -or -name "*.s")
+SRC_FILES := $(shell find $(SRC_DIRS) -path ./UnitTest -prune -name "*.cpp" -or -name "*.c" -or -name "*.s")
 
 # --- TEST_SRC_FILES and TEST_SRC_DIRS ---
 # Test files are always included in the build.
@@ -125,6 +125,7 @@ CPPUTEST_WARNINGFLAGS += -Wno-unused-parameter
 CPPUTEST_CFLAGS += -Wno-missing-prototypes
 #CPPUTEST_CFLAGS += -Wno-strict-prototypes
 CPPUTEST_CFLAGS += -Wno-deprecated-declarations
+CPPUTEST_CXXFLAGS += -Wno-deprecated-declarations
 #CPPUTEST_CXXFLAGS += -Wno-c++14-compat
 CPPUTEST_CXXFLAGS += --std=c++11
 #CPPUTEST_CXXFLAGS += -Wno-c++98-compat-pedantic

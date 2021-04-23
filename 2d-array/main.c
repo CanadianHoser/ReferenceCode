@@ -1,7 +1,9 @@
 /**
  *******************************************************************************
- *
- *
+	Implement an allocator and deallocator for a two-dimensional array
+	library that supports double-subscripting for accessing elements.  The
+	goal is to minimize the number of calls to stdlib functions.  See the
+	conditional code based on the DOUBLE_SUBSCR preprocessor symbol.
  *******************************************************************************
  */
 
@@ -16,29 +18,29 @@
 #ifdef __USE_MALLOC_REPLACEMENT__
 // NOTE: the malloc replacment uses deprecated function sbrk and brk.  These work on linux, but
 //       fail to execute properly on a MAC, resulting in UT failures
+extern size_t malloc_buffer_size;
 size_t malloc_buffer_size = 0;
 
 void *my_malloc(size_t size)
 {
-	void *block_addr = sbrk(size);
-	void * updated = sbrk(0);
+	uintptr_t *block_addr = (uintptr_t *)sbrk((int)size);
+	uintptr_t *updated = sbrk(0);
 	malloc_buffer_size += (uintptr_t)updated - (uintptr_t)block_addr;
 	return block_addr;
 }
 
-void my_free(void *data)
+void my_free(uintptr_t *data)
 {
-	void * curr_top = sbrk(0);
+	uintptr_t * curr_top = sbrk(0);
 	memset(data, 0, malloc_buffer_size);
 	brk(curr_top - malloc_buffer_size);
-	void * updated = sbrk(0);
 }
 
 #else
 void *my_malloc(size_t size) {
     return malloc(size);
 }
-void my_free(void *data)
+void my_free(uintptr_t *data)
 {
     free(data);
 }
@@ -102,7 +104,7 @@ arr_t alloc2d(size_t rows, size_t cols) {
 
 void free2d(arr_t a) {
 #ifdef DOUBLE_SUBSCR
-    my_free(a);
+    my_free((uintptr_t *)a);
 #elif defined(SINGLE_SUBSCR_SAVED_COL_SZ)
     free(a._a);
 #else
