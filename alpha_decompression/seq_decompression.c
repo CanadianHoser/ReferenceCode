@@ -31,7 +31,7 @@ char const *find_next_decompress_token(char const *comp_str, size_t *location)
 		} else {
 			(*location)++;
 		}
-		*(token++);
+		token++;
 	}
 	if (*token == '\0')
 		return NULL;
@@ -51,7 +51,7 @@ int expandBy(char const *comp_str)
 	    if (isdigit(*(comp_str+1))) {
 	    	expandByVal*=10;
 	    }
-	    *(comp_str++);
+	    comp_str++;
 	}
 	if (!(isalpha(token+expandByVal-1)))
 			return EXPANSION_OUT_OF_RANGE;
