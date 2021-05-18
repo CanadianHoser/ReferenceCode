@@ -17,25 +17,40 @@ node_t *createNode(node_t *prev, node_t *next, int data)
     return (node);
 }
 
-int insertNodeAfter(node_t *tail, node_t *node_to_insert)
+node_t* insertNodeAfter(node_t *tail, node_t *node_to_insert)
 {
-    if (tail == NULL)
-       return (-1);
-    node_to_insert->prev = tail;
-    node_to_insert->next = tail->next;
-    tail->next = node_to_insert;
-    return 0;
+    if (tail != NULL) {
+	    node_to_insert->prev = tail;
+	    node_to_insert->next = tail->next;
+	    tail->next = node_to_insert;
+    }
+    return (node_to_insert);
 }
 
-void deleteNode(node_t *node)
+node_t *extractNodeFromList(node_t *node)
 {
     if (node->prev != NULL)
         node->prev->next = node->next;
     if (node->next != NULL)
         node->next->prev = node->prev;
+    node->next = NULL;
+    node->prev = NULL;
+    return(node);
+}
+
+void deleteNode(node_t *node)
+{
+	/*
+    if (node->prev != NULL)
+        node->prev->next = node->next;
+    if (node->next != NULL)
+        node->next->prev = node->prev;
+        */
+	node = extractNodeFromList(node);
     free(node);
     
 }
+
 
 void deleteList(node_t *head){
     while (head->next != NULL)
@@ -45,7 +60,7 @@ void deleteList(node_t *head){
 
 node_t *createLinkedList( int *data, int sizeoflist)
 {
-    node_t *node = NULL, *curNode = NULL, *headNode;
+    node_t *node = NULL, *curNode = NULL, *headNode = NULL;
     int index;
     for (index = 0; index < sizeoflist; index++){
         node = createNode(NULL, NULL, data[index]);
@@ -107,6 +122,14 @@ node_t *removeMatches(node_t *list)
     return head;
 }
 
+void printList(node_t *node) {
+	while(node) {
+		printf("%d  ", node->data);
+		node = node->next;
+	}
+	printf("\n");
+}
+
 node_t *reverseList(node_t *head)
 {
     node_t *prev = (node_t *)NULL;
@@ -120,4 +143,47 @@ node_t *reverseList(node_t *head)
         curr = next;
     }
     return(prev);
+}
+
+node_t *mergeLists(node_t *a, node_t *b)
+{
+	node_t *tail = NULL, *nodeToInsert = NULL, *head = NULL;
+
+	if (!a || !b)
+		return (a ? a : b);
+
+	while(a) {
+		while(b) {
+			if (a && (a->data <= b->data)) {
+//				fprintf(stderr, "1. Insert A\n");
+				nodeToInsert = a;
+			    a = a->next;
+			} else {
+//				fprintf(stderr, "2. Insert B\n");
+				nodeToInsert = b;
+			    b = b->next;
+			}
+//			fprintf(stderr, "Insert node with data %d, a->data: %d, b->data: %d\n", nodeToInsert->data, a ? a->data : 0, b ? b->data : 0);
+			if (!head) {
+				head = extractNodeFromList(nodeToInsert);
+				tail = head;
+			} else {
+				tail = insertNodeAfter(tail, extractNodeFromList(nodeToInsert));
+			}
+		}
+		if (a) {
+			nodeToInsert = a;
+			a = a->next;
+//			fprintf(stderr, "3. Insert A\n");
+//			fprintf(stderr, "Insert node with data %d, a->data: %d, b->data: %d\n", nodeToInsert->data, a ? a->data : 0, b ? b->data : 0);
+			if (!head) {
+				head = extractNodeFromList(nodeToInsert);
+				tail = head;
+			} else {
+				tail = insertNodeAfter(tail, extractNodeFromList(nodeToInsert));
+			}
+		}
+	}
+	fprintf(stderr, "Merge complete\n");
+	return(head);
 }

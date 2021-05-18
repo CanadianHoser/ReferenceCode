@@ -14,29 +14,38 @@ extern "C" {
 
 TEST_GROUP(linkedList)
 {
-    void setup()
+    void setup() override
     {
     }
 
-    void teardown()
+    void teardown() override
     {
     }
 };
 
 TEST(linkedList, createNode_creates_entry)
 {
-    node_t *myNode = createNode(NULL, NULL, 1);
+    node_t *myNode = createNode(nullptr, nullptr, 1);
     CHECK_EQUAL(1, myNode->data);
-    CHECK_TRUE(myNode->next == NULL);
-    CHECK_TRUE(myNode->prev == NULL);
+    CHECK_TRUE(myNode->next == nullptr);
+    CHECK_TRUE(myNode->prev == nullptr);
     free(myNode);
+}
+
+TEST(linkedList, insertNodeAfterOnNullListCreatesANewList)
+{
+	node_t *newList;
+	node_t *emptyList = nullptr;
+	node_t *newNode = createNode(nullptr, nullptr, 1);
+	newList = insertNodeAfter(emptyList, newNode);
+	deleteList(newList);
 }
 
 TEST(linkedList, create_list_of_two_links_correctly_to_each_other)
 {
-    node_t *headNode = createNode(NULL, NULL, 0);
-    node_t *tailNode = createNode(NULL, NULL, 1);
-    CHECK_EQUAL(0, insertNodeAfter(headNode, tailNode));
+    node_t *headNode = createNode(nullptr, nullptr, 0);
+    node_t *tailNode = createNode(nullptr, nullptr, 1);
+    POINTERS_EQUAL(tailNode, insertNodeAfter(headNode, tailNode));
     POINTERS_EQUAL(headNode->next, tailNode);
     POINTERS_EQUAL(tailNode->prev, headNode);
     free(headNode);
@@ -56,7 +65,7 @@ TEST(linkedList, createLinkedList_validation)
         CHECK_EQUAL(data[index], node->data);
         node = node->next;
     }
-    POINTERS_EQUAL(NULL, node);
+    POINTERS_EQUAL(nullptr, node);
     deleteList(myList);
 }
 
@@ -98,7 +107,7 @@ TEST(linkedList, deleteLastEntry)
     int check_data[5] = {1,2,3,4,5};
     myList = createLinkedList(data, 6);
     node = myList;
-    while(node->next != NULL) node = node->next;
+    while(node->next != nullptr) node = node->next;
     deleteNode(node);
     node = myList;
     for (index = 0; index < 5; index++)
@@ -106,7 +115,7 @@ TEST(linkedList, deleteLastEntry)
         CHECK_EQUAL(check_data[index], node->data);
         node = node->next;
     }
-    POINTERS_EQUAL(NULL, node);
+    POINTERS_EQUAL(nullptr, node);
     deleteList(myList);
 }
 
@@ -133,11 +142,11 @@ TEST_GROUP(removeMatches)
 {
     node_t *myList, *node;
 
-    void setup()
+    void setup() override
     {
     }
 
-    void teardown()
+    void teardown() override
     {
     }
 };
@@ -216,8 +225,8 @@ TEST(removeMatches, removeMultipleMatches)
 
 TEST_GROUP(reverseList)
 {
-    void setup() { }
-    void teardown() { }
+    void setup() override { }
+    void teardown() override { }
 };
 
 TEST(reverseList, checkIfListReverses)
@@ -235,4 +244,96 @@ TEST(reverseList, checkIfListReverses)
         node = node->next;
     }
     deleteList(myList);
+}
+
+TEST_GROUP(mergeLists)
+{
+    node_t *list_A, *list_B;
+	int data_a[6] = {2,4,6,8,10,12};
+	int data_b[6] = {1,3,5,7,9,11};
+	int mergedData[12] = {1,2,3,4,5,6,7,8,9,10,11,12};
+    void setup() override {
+    	list_A = createLinkedList(data_a, 6);
+    	list_B = createLinkedList(data_b, 6);
+    }
+    void teardown() override {
+    	deleteList(list_A);
+    	deleteList(list_B);
+    }
+
+    bool compareListToExpected(node_t *node, int *expected, size_t size)
+    {
+    	for (size_t index = 0; index < size; index++)
+    	{
+    		if (!node) return false;
+    		CHECK_EQUAL(expected[index], node->data);
+    		node = node->next;
+    	}
+    	return true;
+    }
+};
+
+TEST(mergeLists, onlyFirstListIsValid)
+{
+	node_t *nullList = nullptr;
+	node_t *newList = mergeLists(list_A, nullList);
+	CHECK_TRUE(compareListToExpected(newList, data_a, 6));
+}
+
+TEST(mergeLists, onlySecondListIsValid)
+{
+	node_t *nullList = nullptr;
+	node_t *newList = mergeLists(nullList, list_B);
+	CHECK_TRUE(compareListToExpected(newList, data_b, 6));
+}
+
+TEST(mergeLists, bothListsAreNullReturnNullList)
+{
+	node_t *nullList = nullptr;
+	node_t *newList = mergeLists(nullList, nullList);
+	CHECK_FALSE(compareListToExpected(newList, data_b, 1));
+	POINTERS_EQUAL(nullptr, newList);
+}
+
+TEST(mergeLists, mergeTwoDisparateListsCreatesOneUnifiedList)
+{
+	node_t *newList = mergeLists(list_A, list_B);
+	printList(newList);
+	CHECK_TRUE(compareListToExpected(newList, mergedData, 12));
+}
+
+TEST(mergeLists, mergeAShortListWithLongList)
+{
+    node_t *list_C = nullptr, *list_D = nullptr;
+	int data_c[1] = {2};
+	int data_d[6] = {1,3,5,7,9,11};
+	list_C = createLinkedList(data_c, 1);
+	list_D = createLinkedList(data_d, 6);
+	int mergedData[7] = {1,2,3,5,7,9,11};
+	node_t *newList = mergeLists(list_C, list_D);
+	printList(newList);
+	CHECK_TRUE(compareListToExpected(newList, mergedData, 7));
+	deleteList(list_C);
+	deleteList(list_D);
+}
+
+TEST(mergeLists, mergeALongListWithShortList)
+{
+    node_t *list_C = nullptr, *list_D = nullptr;
+	int data_c[1] = {2};
+	int data_d[6] = {1,3,5,7,9,11};
+	list_C = createLinkedList(data_c, 1);
+	list_D = createLinkedList(data_d, 6);
+	int mergedData[7] = {1,2,3,5,7,9,11};
+	node_t *newList = mergeLists(list_D, list_C);
+	printList(newList);
+	CHECK_TRUE(compareListToExpected(newList, mergedData, 7));
+	fprintf(stderr, "list_C:");
+	printList(list_C);
+	fprintf(stderr, " END: list_C\n");
+	deleteList(list_C);
+	fprintf(stderr, "list_D:");
+	printList(list_D);
+	fprintf(stderr, " END: list_D\n");
+	deleteList(list_D);
 }
