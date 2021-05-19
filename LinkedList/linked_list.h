@@ -30,7 +30,7 @@ extern void deleteList(node_t *head);
 extern node_t * removeMatches(node_t *list);
 extern node_t *reverseList(node_t *head);
 extern size_t getListSize(node_t *head);
-extern node_t *mergeLists(node_t *a, node_t *b);
+extern node_t *mergeLists(node_t **a, node_t **b);
 extern void printList(node_t *node);
 
 #endif /* linked_list_h */

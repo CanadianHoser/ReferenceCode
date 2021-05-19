@@ -6,6 +6,7 @@
 //
 
 #include "linked_list.h"
+#include <inttypes.h>
 
 node_t *createNode(node_t *prev, node_t *next, int data)
 {
@@ -29,6 +30,7 @@ node_t* insertNodeAfter(node_t *tail, node_t *node_to_insert)
 
 node_t *extractNodeFromList(node_t *node)
 {
+	if (!node) return NULL;
     if (node->prev != NULL)
         node->prev->next = node->next;
     if (node->next != NULL)
@@ -47,12 +49,16 @@ void deleteNode(node_t *node)
         node->next->prev = node->prev;
         */
 	node = extractNodeFromList(node);
-    free(node);
-    
+	if (node) {
+	    free(node);
+	    node = NULL;
+	}
 }
 
 
 void deleteList(node_t *head){
+//	fprintf(stderr, "Deleting list with head %" PRIxPTR "\n", head);
+	if (!head) return;
     while (head->next != NULL)
         deleteNode(head->next);
     deleteNode(head);
@@ -145,25 +151,35 @@ node_t *reverseList(node_t *head)
     return(prev);
 }
 
-node_t *mergeLists(node_t *a, node_t *b)
+node_t *mergeLists(node_t **a, node_t **b)
 {
 	node_t *tail = NULL, *nodeToInsert = NULL, *head = NULL;
 
-	if (!a || !b)
-		return (a ? a : b);
+	// Handle cases where one or both lists are null
+	if (!(*a) || !(*b)) {
+		node_t *newList;
 
-	while(a) {
-		while(b) {
-			if (a && (a->data <= b->data)) {
-//				fprintf(stderr, "1. Insert A\n");
-				nodeToInsert = a;
-			    a = a->next;
+		if (!*a && !*b)
+			return (node_t *)NULL;
+		if (*a) {
+			newList = (*a ? *a : *b);
+			*a = NULL;
+		} else {
+			newList = (*a ? *a : *b);
+			*b = NULL;
+		}
+		return(newList);
+	}
+
+	while(*a) {
+		while(*b) {
+			if (*a && ((*a)->data <= (*b)->data)) {
+				nodeToInsert = *a;
+			    *a = (*a)->next;
 			} else {
-//				fprintf(stderr, "2. Insert B\n");
-				nodeToInsert = b;
-			    b = b->next;
+				nodeToInsert = *b;
+			    *b = (*b)->next;
 			}
-//			fprintf(stderr, "Insert node with data %d, a->data: %d, b->data: %d\n", nodeToInsert->data, a ? a->data : 0, b ? b->data : 0);
 			if (!head) {
 				head = extractNodeFromList(nodeToInsert);
 				tail = head;
@@ -171,11 +187,9 @@ node_t *mergeLists(node_t *a, node_t *b)
 				tail = insertNodeAfter(tail, extractNodeFromList(nodeToInsert));
 			}
 		}
-		if (a) {
-			nodeToInsert = a;
-			a = a->next;
-//			fprintf(stderr, "3. Insert A\n");
-//			fprintf(stderr, "Insert node with data %d, a->data: %d, b->data: %d\n", nodeToInsert->data, a ? a->data : 0, b ? b->data : 0);
+		if (*a) {
+			nodeToInsert = *a;
+			*a = (*a)->next;
 			if (!head) {
 				head = extractNodeFromList(nodeToInsert);
 				tail = head;
@@ -184,6 +198,5 @@ node_t *mergeLists(node_t *a, node_t *b)
 			}
 		}
 	}
-	fprintf(stderr, "Merge complete\n");
 	return(head);
 }

@@ -249,6 +249,7 @@ TEST(reverseList, checkIfListReverses)
 TEST_GROUP(mergeLists)
 {
     node_t *list_A, *list_B;
+    node_t *newList;
 	int data_a[6] = {2,4,6,8,10,12};
 	int data_b[6] = {1,3,5,7,9,11};
 	int mergedData[12] = {1,2,3,4,5,6,7,8,9,10,11,12};
@@ -257,8 +258,9 @@ TEST_GROUP(mergeLists)
     	list_B = createLinkedList(data_b, 6);
     }
     void teardown() override {
-    	deleteList(list_A);
-    	deleteList(list_B);
+    	if(list_A) deleteList(list_A);
+    	if(list_B) deleteList(list_B);
+    	if(newList) deleteList(newList);
     }
 
     bool compareListToExpected(node_t *node, int *expected, size_t size)
@@ -276,30 +278,39 @@ TEST_GROUP(mergeLists)
 TEST(mergeLists, onlyFirstListIsValid)
 {
 	node_t *nullList = nullptr;
-	node_t *newList = mergeLists(list_A, nullList);
+	newList = mergeLists(&list_A, &nullList);
 	CHECK_TRUE(compareListToExpected(newList, data_a, 6));
+	POINTERS_EQUAL(nullptr, list_A);
 }
 
 TEST(mergeLists, onlySecondListIsValid)
 {
 	node_t *nullList = nullptr;
-	node_t *newList = mergeLists(nullList, list_B);
+	newList = mergeLists(&nullList, &list_B);
 	CHECK_TRUE(compareListToExpected(newList, data_b, 6));
+	POINTERS_EQUAL(nullptr, list_B);
 }
 
 TEST(mergeLists, bothListsAreNullReturnNullList)
 {
 	node_t *nullList = nullptr;
-	node_t *newList = mergeLists(nullList, nullList);
+	newList = mergeLists(&nullList, &nullList);
 	CHECK_FALSE(compareListToExpected(newList, data_b, 1));
 	POINTERS_EQUAL(nullptr, newList);
 }
 
 TEST(mergeLists, mergeTwoDisparateListsCreatesOneUnifiedList)
 {
-	node_t *newList = mergeLists(list_A, list_B);
+	newList = mergeLists(&list_A, &list_B);
 	printList(newList);
 	CHECK_TRUE(compareListToExpected(newList, mergedData, 12));
+}
+
+TEST(mergeLists, originalListsAreEmptyAfterMerge)
+{
+	newList = mergeLists(&list_A, &list_B);
+	POINTERS_EQUAL(nullptr, list_A);
+	POINTERS_EQUAL(nullptr, list_B);
 }
 
 TEST(mergeLists, mergeAShortListWithLongList)
@@ -310,7 +321,7 @@ TEST(mergeLists, mergeAShortListWithLongList)
 	list_C = createLinkedList(data_c, 1);
 	list_D = createLinkedList(data_d, 6);
 	int mergedData[7] = {1,2,3,5,7,9,11};
-	node_t *newList = mergeLists(list_C, list_D);
+	newList = mergeLists(&list_C, &list_D);
 	printList(newList);
 	CHECK_TRUE(compareListToExpected(newList, mergedData, 7));
 	deleteList(list_C);
@@ -325,15 +336,7 @@ TEST(mergeLists, mergeALongListWithShortList)
 	list_C = createLinkedList(data_c, 1);
 	list_D = createLinkedList(data_d, 6);
 	int mergedData[7] = {1,2,3,5,7,9,11};
-	node_t *newList = mergeLists(list_D, list_C);
+	newList = mergeLists(&list_D, &list_C);
 	printList(newList);
 	CHECK_TRUE(compareListToExpected(newList, mergedData, 7));
-	fprintf(stderr, "list_C:");
-	printList(list_C);
-	fprintf(stderr, " END: list_C\n");
-	deleteList(list_C);
-	fprintf(stderr, "list_D:");
-	printList(list_D);
-	fprintf(stderr, " END: list_D\n");
-	deleteList(list_D);
 }
