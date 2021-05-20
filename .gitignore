@@ -1,5 +1,9 @@
+*.swp
 *.d
 *.gcda
 *.gcno
 *.a
 *.o
+gcov_output*
+gcov_report*
+language.settings.xml
