@@ -85,7 +85,7 @@ size_t getListSize(node_t *head)
     return listSize;
 }
 
-// Given a linked list, if there are any matches, delete all available matches, return
+// Given a linked list, if there are any duplicates, delete all available matches, return
 // the head of the updated list
 node_t *removeMatches(node_t *list)
 {
@@ -151,7 +151,7 @@ node_t *mergeLists(node_t **a, node_t **b)
 	node_t *tail = NULL, *nodeToInsert = NULL, *head = NULL;
 
 	// Handle cases where one or both lists are null
-	if (!(*a) || !(*b)) {
+	if (!*a || !*b) {
 		node_t *newList;
 
 		if (!*a && !*b)

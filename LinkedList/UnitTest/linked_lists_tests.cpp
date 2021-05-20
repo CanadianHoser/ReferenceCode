@@ -41,7 +41,7 @@ TEST(linkedList, insertNodeAfterOnNullListCreatesANewList)
 	deleteList(newList);
 }
 
-TEST(linkedList, create_list_of_two_links_correctly_to_each_other)
+TEST(linkedList, linkedListOfTwoCorrectlyLinkToEachOther)
 {
     node_t *headNode = createNode(nullptr, nullptr, 0);
     node_t *tailNode = createNode(nullptr, nullptr, 1);
@@ -52,7 +52,7 @@ TEST(linkedList, create_list_of_two_links_correctly_to_each_other)
     free(tailNode);
 }
 
-TEST(linkedList, createLinkedList_validation)
+TEST(linkedList, createLinkedListHelperIsSuccessful)
 {
     node_t *myList;
     node_t *node;
@@ -69,7 +69,7 @@ TEST(linkedList, createLinkedList_validation)
     deleteList(myList);
 }
 
-TEST(linkedList, createLinkedList_creates_list_of_appropriate_size)
+TEST(linkedList, createLinkedListHelperCreatesListOfAppropriateSize)
 {
     node_t *myList;
     int data[6] = {1,2,2,3,5,7};
@@ -87,7 +87,7 @@ TEST(linkedList, callPrintListForCodeCoverage)
     deleteList(myList);
 }
 
-TEST(linkedList, deleteFirstEntry)
+TEST(linkedList, canDeleteFirstEntry)
 {
     node_t *myList;
     node_t *node;
@@ -107,7 +107,7 @@ TEST(linkedList, deleteFirstEntry)
     deleteList(myList);
 }
 
-TEST(linkedList, deleteLastEntry)
+TEST(linkedList, canDeleteLastEntry)
 {
     node_t *myList;
     node_t *node;
@@ -128,13 +128,7 @@ TEST(linkedList, deleteLastEntry)
     deleteList(myList);
 }
 
-TEST(linkedList, extractNodeFromEmptyListReturnsNullPointer)
-{
-	node_t *nullNode = nullptr;
-	POINTERS_EQUAL(nullptr, extractNodeFromList(nullNode));
-}
-
-TEST(linkedList, deleteMiddleEntry)
+TEST(linkedList, canDeleteMiddleEntry)
 {
     node_t *myList;
     node_t *node;
@@ -153,6 +147,12 @@ TEST(linkedList, deleteMiddleEntry)
     deleteList(myList);
 }
 
+TEST(linkedList, extractNodeFromEmptyListReturnsNullPointer)
+{
+	node_t *nullNode = nullptr;
+	POINTERS_EQUAL(nullptr, extractNodeFromList(nullNode));
+}
+
 TEST_GROUP(removeMatches)
 {
     node_t *myList, *node;
@@ -166,7 +166,7 @@ TEST_GROUP(removeMatches)
     }
 };
 
-TEST(removeMatches, removeMatchesInBeginning)
+TEST(removeMatches, canRemoveMatchesInBeginning)
 {
     node_t *myList, *node;
     int index;
@@ -184,7 +184,7 @@ TEST(removeMatches, removeMatchesInBeginning)
     deleteList(myList);
 }
 
-TEST(removeMatches, removeMatchesInMiddle)
+TEST(removeMatches, canRemoveMatchesInMiddle)
 {
     node_t *myList, *node;
     int index;
@@ -202,7 +202,7 @@ TEST(removeMatches, removeMatchesInMiddle)
     deleteList(myList);
 }
 
-TEST(removeMatches, removeMatchesAtEnd)
+TEST(removeMatches, canRemoveMatchesAtEnd)
 {
     node_t *myList, *node;
     int index;
@@ -220,7 +220,7 @@ TEST(removeMatches, removeMatchesAtEnd)
     deleteList(myList);
 }
 
-TEST(removeMatches, removeMultipleMatches)
+TEST(removeMatches, canRemoveMultipleMatches)
 {
     node_t *myList, *node;
     int index;
@@ -296,7 +296,7 @@ TEST_GROUP(mergeLists)
     }
 };
 
-TEST(mergeLists, onlyFirstListIsValid)
+TEST(mergeLists, canHandleOnlyFirstListIsValid)
 {
 	node_t *nullList = nullptr;
 	newList = mergeLists(&list_A, &nullList);
@@ -304,7 +304,7 @@ TEST(mergeLists, onlyFirstListIsValid)
 	POINTERS_EQUAL(nullptr, list_A);
 }
 
-TEST(mergeLists, onlySecondListIsValid)
+TEST(mergeLists, canHandleOnlySecondListIsValid)
 {
 	node_t *nullList = nullptr;
 	newList = mergeLists(&nullList, &list_B);
@@ -333,7 +333,7 @@ TEST(mergeLists, originalListsAreEmptyAfterMerge)
 	POINTERS_EQUAL(nullptr, list_B);
 }
 
-TEST(mergeLists, mergeAShortListWithLongList)
+TEST(mergeLists, canMergeAShortListWithLongList)
 {
     node_t *list_C = nullptr, *list_D = nullptr;
 	int data_c[1] = {2};
@@ -345,7 +345,7 @@ TEST(mergeLists, mergeAShortListWithLongList)
 	CHECK_TRUE(compareListToExpected(newList, mergedData, 7));
 }
 
-TEST(mergeLists, mergeALongListWithShortList)
+TEST(mergeLists, canMergeALongListWithShortList)
 {
     node_t *list_C = nullptr, *list_D = nullptr;
 	int data_c[1] = {2};
