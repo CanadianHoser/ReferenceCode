@@ -76,7 +76,8 @@ TEST(my_malloc_tests, my_malloc_increments_sbrk_address)
 }
 
 // NOTE: This test fails on MacOS because sbrk has been deprecated and not fully functional
-TEST(my_malloc_tests, my_malloc_with_negative_value_decrements_sbrk_address)
+#if !defined(OSX)
+TEST(my_malloc_tests, my_malloc_with_negative_value_decrements_sbrk_address_THIS_WILL_FAIL_ON_MAC)
 {
 	void * updated_sbrk = my_malloc(0x10);
 	updated_sbrk = sbrk(0);
@@ -88,6 +89,7 @@ TEST(my_malloc_tests, my_malloc_with_negative_value_decrements_sbrk_address)
 	updated_sbrk = sbrk(0);
 	LONGS_EQUAL(init_sbrk, updated_sbrk);
 }
+#endif
 
 TEST(my_malloc_tests, my_malloc_with_zero_size_does_not_increase_memory_usage)
 {

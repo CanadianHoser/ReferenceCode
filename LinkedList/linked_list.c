@@ -7,6 +7,7 @@
 
 #include "linked_list.h"
 #include <inttypes.h>
+#include <stdbool.h>
 
 node_t *createNode(node_t *prev, node_t *next, int data)
 {
@@ -90,7 +91,7 @@ size_t getListSize(node_t *head)
 node_t *removeMatches(node_t *list)
 {
     node_t *node = list;
-    int delete_a_node = 0;
+    bool delete_comparison_node = false;
     if (list == NULL)
     	return NULL;
     node_t *node_to_check;
@@ -99,7 +100,7 @@ node_t *removeMatches(node_t *list)
 
     while(node->next != NULL)
     {
-        delete_a_node = 0;
+        delete_comparison_node = false;
         node_to_check = node->next;
         while(node_to_check->next != NULL) {
             if (node->data == node_to_check->data) {
@@ -107,12 +108,12 @@ node_t *removeMatches(node_t *list)
                 node_to_delete = node_to_check;
                 node_to_check = node_to_check->prev;
                 deleteNode(node_to_delete);
-                delete_a_node++;
+                delete_comparison_node = true;
             }
             node_to_check = node_to_check->next;
         }
         node = node->next;
-        if(delete_a_node) {
+        if(delete_comparison_node == true) {
             // Special case if we have an entry on the first match
             if (node->prev == head)
                 head = node;
