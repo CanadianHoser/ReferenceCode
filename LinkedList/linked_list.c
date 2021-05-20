@@ -190,12 +190,7 @@ node_t *mergeLists(node_t **a, node_t **b)
 		if (*a) {
 			nodeToInsert = *a;
 			*a = (*a)->next;
-			if (!head) {
-				head = extractNodeFromList(nodeToInsert);
-				tail = head;
-			} else {
-				tail = insertNodeAfter(tail, extractNodeFromList(nodeToInsert));
-			}
+			tail = insertNodeAfter(tail, extractNodeFromList(nodeToInsert));
 		}
 	}
 	return(head);
