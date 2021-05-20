@@ -4,6 +4,8 @@
 *.gcno
 *.a
 *.o
+*.gcov
 gcov_output*
 gcov_report*
+gcov_error*
 language.settings.xml
