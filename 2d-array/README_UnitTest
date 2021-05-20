@@ -1,0 +1,6 @@
+cd into UnitTest and "make" to compile and run unit tests.
+You can re-run the unit tests with more detail with the command: 
+
+./alpha_decompression_UT_tests -v
+
+This will show all the test case names as they are run.
