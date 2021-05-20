@@ -11,3 +11,6 @@ gcov_error*
 language.settings.xml
 test-lib/
 gcov/
+/.DS_Store
+/.cproject
+/.project
