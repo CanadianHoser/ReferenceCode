@@ -30,7 +30,8 @@ node_t* insertNodeAfter(node_t *tail, node_t *node_to_insert)
 
 node_t *extractNodeFromList(node_t *node)
 {
-	if (!node) return NULL;
+	if (!node)
+		return NULL;
     if (node->prev != NULL)
         node->prev->next = node->next;
     if (node->next != NULL)
@@ -42,12 +43,6 @@ node_t *extractNodeFromList(node_t *node)
 
 void deleteNode(node_t *node)
 {
-	/*
-    if (node->prev != NULL)
-        node->prev->next = node->next;
-    if (node->next != NULL)
-        node->next->prev = node->prev;
-        */
 	node = extractNodeFromList(node);
 	if (node) {
 	    free(node);
@@ -96,7 +91,8 @@ node_t *removeMatches(node_t *list)
 {
     node_t *node = list;
     int delete_a_node = 0;
-    if (list == NULL) return NULL;
+    if (list == NULL)
+    	return NULL;
     node_t *node_to_check;
     node_t *node_to_delete;
     node_t *head = list;
@@ -106,10 +102,8 @@ node_t *removeMatches(node_t *list)
         delete_a_node = 0;
         node_to_check = node->next;
         while(node_to_check->next != NULL) {
-//            printf("Checking node %d to %d\n", node->data, node_to_check->data);
             if (node->data == node_to_check->data) {
                 // have a match, need to update next, then finally delete
-//                printf("deleting node with data %d\n", node_to_check->data);
                 node_to_delete = node_to_check;
                 node_to_check = node_to_check->prev;
                 deleteNode(node_to_delete);
@@ -140,7 +134,7 @@ node_t *reverseList(node_t *head)
 {
     node_t *prev = (node_t *)NULL;
     node_t *curr = head;
-    node_t *next;
+    node_t *next = NULL;
     while(curr != NULL) {
         next = curr->next;
         curr->next = prev;

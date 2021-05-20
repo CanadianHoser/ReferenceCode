@@ -78,6 +78,15 @@ TEST(linkedList, createLinkedList_creates_list_of_appropriate_size)
     deleteList(myList);
 }
 
+TEST(linkedList, callPrintListForCodeCoverage)
+{
+    node_t *myList;
+    int data[6] = {1,2,3,4,5,6};
+    myList = createLinkedList(data, 6);
+    printList(myList);
+    deleteList(myList);
+}
+
 TEST(linkedList, deleteFirstEntry)
 {
     node_t *myList;
@@ -117,6 +126,12 @@ TEST(linkedList, deleteLastEntry)
     }
     POINTERS_EQUAL(nullptr, node);
     deleteList(myList);
+}
+
+TEST(linkedList, extractNodeFromEmptyListReturnsNullPointer)
+{
+	node_t *nullNode = nullptr;
+	POINTERS_EQUAL(nullptr, extractNodeFromList(nullNode));
 }
 
 TEST(linkedList, deleteMiddleEntry)
@@ -221,6 +236,12 @@ TEST(removeMatches, removeMultipleMatches)
         node = node->next;
     }
     deleteList(myList);
+}
+
+TEST(removeMatches, removeMatchesFromAnEmptyListReturnsAnEmptyList)
+{
+	node_t *emptyList = nullptr;
+	POINTERS_EQUAL(nullptr, removeMatches(emptyList));
 }
 
 TEST_GROUP(reverseList)
