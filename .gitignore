@@ -9,3 +9,5 @@ gcov_output*
 gcov_report*
 gcov_error*
 language.settings.xml
+test-lib/
+gcov/
