@@ -151,6 +151,7 @@ node_t *reverseList(node_t *head)
     return(prev);
 }
 
+// Merge 2 ordered linked lists, returning a new linked list.  The original lists should be empty.
 node_t *mergeLists(node_t **a, node_t **b)
 {
 	node_t *tail = NULL, *nodeToInsert = NULL, *head = NULL;

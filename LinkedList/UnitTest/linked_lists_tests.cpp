@@ -302,7 +302,6 @@ TEST(mergeLists, bothListsAreNullReturnNullList)
 TEST(mergeLists, mergeTwoDisparateListsCreatesOneUnifiedList)
 {
 	newList = mergeLists(&list_A, &list_B);
-	printList(newList);
 	CHECK_TRUE(compareListToExpected(newList, mergedData, 12));
 }
 
@@ -322,10 +321,7 @@ TEST(mergeLists, mergeAShortListWithLongList)
 	list_D = createLinkedList(data_d, 6);
 	int mergedData[7] = {1,2,3,5,7,9,11};
 	newList = mergeLists(&list_C, &list_D);
-	printList(newList);
 	CHECK_TRUE(compareListToExpected(newList, mergedData, 7));
-	deleteList(list_C);
-	deleteList(list_D);
 }
 
 TEST(mergeLists, mergeALongListWithShortList)
@@ -337,6 +333,5 @@ TEST(mergeLists, mergeALongListWithShortList)
 	list_D = createLinkedList(data_d, 6);
 	int mergedData[7] = {1,2,3,5,7,9,11};
 	newList = mergeLists(&list_D, &list_C);
-	printList(newList);
 	CHECK_TRUE(compareListToExpected(newList, mergedData, 7));
 }
