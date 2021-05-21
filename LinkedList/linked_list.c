@@ -158,10 +158,10 @@ node_t *mergeLists(node_t **a, node_t **b)
 		if (!*a && !*b)
 			return (node_t *)NULL;
 		if (*a) {
-			newList = (*a ? *a : *b);
+			newList = *a;
 			*a = NULL;
 		} else {
-			newList = (*a ? *a : *b);
+			newList = *b;
 			*b = NULL;
 		}
 		return(newList);
