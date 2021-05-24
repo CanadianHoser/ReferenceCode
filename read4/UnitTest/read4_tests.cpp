@@ -129,3 +129,14 @@ TEST(buf_read, attempting_a_new_read_after_buffer_depleted_returns_a_null_buffer
 	LONGS_EQUAL(0, buf_read(buf, 1));
 	STRCMP_EQUAL("", buf);
 }
+
+TEST(buf_read, attempting_an_invalid_small_read_after_multiple_small_reads_returns_a_null_buffer)
+{
+	sprintf(full_buffer, "abc");
+	LONGS_EQUAL(1, buf_read(buf, 1));
+	STRCMP_EQUAL("a", buf);
+	LONGS_EQUAL(2, buf_read(buf, 2));
+	STRCMP_EQUAL("bc", buf);
+	LONGS_EQUAL(0, buf_read(buf, 1));
+	STRCMP_EQUAL("", buf);
+}

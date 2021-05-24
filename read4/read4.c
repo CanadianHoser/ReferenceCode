@@ -65,37 +65,37 @@ buf_read(buf, 1); // We have reached the end of file, no more characters can be 
 
 static char last_read[4];
 static unsigned int last_read_chars_remaining = 0;
+static unsigned int read_count = 0;
 extern unsigned int read4(char *);
 
 void reset_read_buffer(void) {
 	last_read_chars_remaining = 0;
+	read_count = 0;
 }
 
 unsigned int buf_read(char* buff, unsigned int n) {
-    unsigned int read_count;
     unsigned int total_count = 0;
     // Account for any remaining characters from previous read
     if (last_read_chars_remaining) {
-      // fprintf(stderr, "last_read_chars_remaining: %d, last_read: %s\n", last_read_chars_remaining, last_read);
       total_count = (n >= last_read_chars_remaining) ? last_read_chars_remaining : n;
-      memcpy(buff, &last_read[4-last_read_chars_remaining], total_count);;
+      memcpy(buff, &last_read[read_count-last_read_chars_remaining], total_count);;
+      last_read_chars_remaining-=n;
       n -= total_count;
     }
     while (n > 0) {
-       last_read_chars_remaining = 4;
        read_count = read4(last_read);
+       last_read_chars_remaining = read_count;
        // fprintf(stderr, "last_read: %s\n", last_read);
        if (n < read_count) {
-	       memcpy(&buff[total_count], &last_read[4-last_read_chars_remaining], n);
+	       memcpy(&buff[total_count], last_read, n);
 	       last_read_chars_remaining -= n;
+	       // handle a partial read for total_count, may not be n
 	       total_count+=n;
-           fprintf(stderr, "1: n: %d, total_count: %d\n", n, total_count);
 	       n-=n;
        } else {
-	       memcpy(&buff[total_count], &last_read[4-last_read_chars_remaining], read_count);
-	       last_read_chars_remaining -= read_count;
+	       memcpy(&buff[total_count], last_read, read_count);
+	       last_read_chars_remaining = 0;
 	       total_count+=read_count;
-	       fprintf(stderr, "2: read_count: %d, total_count: %d\n", read_count, total_count);
 	       n-=read_count;
 	       if (read_count<4) break;
        }
