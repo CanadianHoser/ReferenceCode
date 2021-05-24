@@ -1,0 +1,24 @@
+whein@Warrens-MacBook-Pro UnitTest % make gcov
+(@  @rm -f test-obj/..//read4.gcda test-obj/..//read4.gcda test-obj/./read4_tests.gcda test-obj/./ut_main.gcda gcov_output.txt gcov_report.txt gcov_error.txt ; echo "Running read4_tests"; ./read4_tests ; echo $? > /tmp/cpputestResult.uTC) | tee read4_tests.txt
+/bin/sh: @: command not found
+Running read4_tests
+...........
+OK (11 tests, 11 ran, 36 checks, 0 ignored, 0 filtered out, 0 ms)
+
+../../cpputest/scripts/filterGcov.sh gcov_output.txt gcov_error.txt gcov_report.txt read4_tests.txt
+100.00% of 29   File ..//read4.c
+See gcov directory for details
+whein@Warrens-MacBook-Pro UnitTest % ./read4_tests -v
+TEST(buf_read, attempting_an_invalid_small_read_after_multiple_small_reads_returns_a_null_buffer) - 0 ms
+TEST(buf_read, attempting_a_new_read_after_buffer_depleted_returns_a_null_buffer) - 0 ms
+TEST(buf_read, reading_in_small_strings_will_be_handled_with_a_single_read4_call) - 0 ms
+TEST(buf_read, buf_read_will_read_in_small_strings) - 0 ms
+TEST(buf_read, can_read_a_large_string_with_a_partial_last_read) - 0 ms
+TEST(buf_read, buf_read_will_read_in_large_strings) - 0 ms
+TEST(buf_read, buf_read_can_read) - 0 ms
+TEST(buf_read, read4_mock_will_return_an_empty_buf_when_no_characters_remaining) - 0 ms
+TEST(buf_read, read4_mock_will_return_a_partial_buf_when_less_than_4_characters_remaining) - 0 ms
+TEST(buf_read, read4_mock_returns_next_4_characters) - 0 ms
+TEST(buf_read, read4_mock_returns_first_4_characters) - 0 ms
+
+OK (11 tests, 11 ran, 36 checks, 0 ignored, 0 filtered out, 1 ms)

@@ -32,7 +32,7 @@ extern "C" {
 
 TEST_GROUP(buf_read)
 {
-	char buf[4];
+	char small_buf[4];
 
     void setup() override
     {
@@ -51,39 +51,39 @@ TEST_GROUP(buf_read)
 
 TEST(buf_read, read4_mock_returns_first_4_characters)
 {
-	LONGS_EQUAL(4,read4(buf));
-	STRCMP_EQUAL("beef", buf);
+	LONGS_EQUAL(4,read4(small_buf));
+	STRCMP_EQUAL("beef", small_buf);
 	LONGS_EQUAL(1, read4_fake.call_count);
 }
 
 TEST(buf_read, read4_mock_returns_next_4_characters)
 {
-	LONGS_EQUAL(4,read4(buf));
-	STRCMP_EQUAL("beef", buf);
-	LONGS_EQUAL(4,read4(buf));
-	STRCMP_EQUAL("face", buf);
+	LONGS_EQUAL(4,read4(small_buf));
+	STRCMP_EQUAL("beef", small_buf);
+	LONGS_EQUAL(4,read4(small_buf));
+	STRCMP_EQUAL("face", small_buf);
 }
 
 TEST(buf_read, read4_mock_will_return_a_partial_buf_when_less_than_4_characters_remaining)
 {
 	sprintf(full_buffer, "01");
-	LONGS_EQUAL(2,read4(buf));
-	STRNCMP_EQUAL("01", buf, sizeof(buf));
+	LONGS_EQUAL(2,read4(small_buf));
+	STRNCMP_EQUAL("01", small_buf, sizeof(small_buf));
 }
 
 TEST(buf_read, read4_mock_will_return_an_empty_buf_when_no_characters_remaining)
 {
 	sprintf(full_buffer, "01");
 	full_buffer[0]='\0';
-	LONGS_EQUAL(0,read4(buf));
-	STRNCMP_EQUAL("", buf, sizeof(buf));
+	LONGS_EQUAL(0,read4(small_buf));
+	STRNCMP_EQUAL("", small_buf, sizeof(small_buf));
 }
 
 TEST(buf_read, buf_read_can_read)
 {
 	sprintf(full_buffer, "abcd");
-	LONGS_EQUAL(4, buf_read(buf, 4));
-	STRNCMP_EQUAL("abcd", buf, sizeof(buf));
+	LONGS_EQUAL(4, buf_read(small_buf, 4));
+	STRNCMP_EQUAL("abcd", small_buf, sizeof(small_buf));
 }
 
 TEST(buf_read, buf_read_will_read_in_large_strings)
@@ -107,36 +107,36 @@ TEST(buf_read, can_read_a_large_string_with_a_partial_last_read)
 TEST(buf_read, buf_read_will_read_in_small_strings)
 {
 	sprintf(full_buffer, "a");
-	LONGS_EQUAL(1, buf_read(buf, 1));
-	STRCMP_EQUAL("a", buf);
+	LONGS_EQUAL(1, buf_read(small_buf, 1));
+	STRCMP_EQUAL("a", small_buf);
 }
 
 TEST(buf_read, reading_in_small_strings_will_be_handled_with_a_single_read4_call)
 {
 	sprintf(full_buffer, "abc");
-	LONGS_EQUAL(1, buf_read(buf, 1));
-	STRCMP_EQUAL("a", buf);
-	LONGS_EQUAL(1, buf_read(buf, 1));
-	STRCMP_EQUAL("b", buf);
+	LONGS_EQUAL(1, buf_read(small_buf, 1));
+	STRCMP_EQUAL("a", small_buf);
+	LONGS_EQUAL(1, buf_read(small_buf, 1));
+	STRCMP_EQUAL("b", small_buf);
 	LONGS_EQUAL(1, read4_fake.call_count);
 }
 
 TEST(buf_read, attempting_a_new_read_after_buffer_depleted_returns_a_null_buffer)
 {
 	sprintf(full_buffer, "abc");
-	LONGS_EQUAL(3, buf_read(buf, 4));
-	STRCMP_EQUAL("abc", buf);
-	LONGS_EQUAL(0, buf_read(buf, 1));
-	STRCMP_EQUAL("", buf);
+	LONGS_EQUAL(3, buf_read(small_buf, 4));
+	STRCMP_EQUAL("abc", small_buf);
+	LONGS_EQUAL(0, buf_read(small_buf, 1));
+	STRCMP_EQUAL("", small_buf);
 }
 
 TEST(buf_read, attempting_an_invalid_small_read_after_multiple_small_reads_returns_a_null_buffer)
 {
 	sprintf(full_buffer, "abc");
-	LONGS_EQUAL(1, buf_read(buf, 1));
-	STRCMP_EQUAL("a", buf);
-	LONGS_EQUAL(2, buf_read(buf, 2));
-	STRCMP_EQUAL("bc", buf);
-	LONGS_EQUAL(0, buf_read(buf, 1));
-	STRCMP_EQUAL("", buf);
+	LONGS_EQUAL(1, buf_read(small_buf, 1));
+	STRCMP_EQUAL("a", small_buf);
+	LONGS_EQUAL(2, buf_read(small_buf, 2));
+	STRCMP_EQUAL("bc", small_buf);
+	LONGS_EQUAL(0, buf_read(small_buf, 1));
+	STRCMP_EQUAL("", small_buf);
 }
