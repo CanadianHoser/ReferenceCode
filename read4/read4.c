@@ -68,37 +68,39 @@ static unsigned int last_read_chars_remaining = 0;
 static unsigned int read_count = 0;
 extern unsigned int read4(char *);
 
-void reset_read_buffer(void) {
-	last_read_chars_remaining = 0;
-	read_count = 0;
+void reset_read_buffer(void)
+{
+  last_read_chars_remaining = 0;
+  read_count = 0;
 }
 
-unsigned int buf_read(char* buff, unsigned int n) {
-    unsigned int total_count = 0;
-    // Account for any remaining characters from previous read
-    if (last_read_chars_remaining) {
-      total_count = (n >= last_read_chars_remaining) ? last_read_chars_remaining : n;
-      memcpy(buff, &last_read[read_count-last_read_chars_remaining], total_count);;
-      last_read_chars_remaining-=n;
-      n -= total_count;
+unsigned int buf_read(char* buff, unsigned int n)
+{
+  unsigned int total_count = 0;
+  // Account for any remaining characters from previous read
+  if (last_read_chars_remaining) {
+    total_count = (n >= last_read_chars_remaining) ? last_read_chars_remaining : n;
+    memcpy(buff, &last_read[read_count-last_read_chars_remaining], total_count);;
+    last_read_chars_remaining-=n;
+    n -= total_count;
+  }
+  while (n > 0) {
+    read_count = read4(last_read);
+    last_read_chars_remaining = read_count;
+    if (n < read_count) {
+      memcpy(&buff[total_count], last_read, n);
+      last_read_chars_remaining -= n;
+      total_count+=n;
+      n = 0;
+    } else {
+      memcpy(&buff[total_count], last_read, read_count);
+      last_read_chars_remaining = 0;
+      total_count+=read_count;
+      n-=read_count;
+      if (read_count<4)
+        break;
     }
-    while (n > 0) {
-       read_count = read4(last_read);
-       last_read_chars_remaining = read_count;
-       if (n < read_count) {
-	       memcpy(&buff[total_count], last_read, n);
-	       last_read_chars_remaining -= n;
-	       total_count+=n;
-	       n = 0;
-       } else {
-	       memcpy(&buff[total_count], last_read, read_count);
-	       last_read_chars_remaining = 0;
-	       total_count+=read_count;
-	       n-=read_count;
-	       if (read_count<4)
-	    	   break;
-       }
-    }
-    buff[total_count] = '\0';
-    return (total_count);
+  }
+  buff[total_count] = '\0';
+  return (total_count);
 }
