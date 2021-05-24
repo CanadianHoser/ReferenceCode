@@ -1,3 +1,6 @@
 [submodule "cpputest"]
 	path = cpputest
 	url = http://github.com/cpputest/cpputest
+[submodule "fff"]
+	path = fff
+	url = https://github.com/meekrosoft/fff.git
