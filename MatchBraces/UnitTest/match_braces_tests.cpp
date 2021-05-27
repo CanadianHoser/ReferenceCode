@@ -78,3 +78,37 @@ TEST(match_braces, noOpenCandidateIfStringIsNull)
     STRCMP_EQUAL(nullptr, findOpenCandidate(nullptr));
 }
 
+TEST(match_braces, findSimpleMatch)
+{
+	CHECK_TRUE(bracesComplete("{}"));
+}
+
+TEST(match_braces, findNoMatch)
+{
+	CHECK_FALSE(bracesComplete("{jk"));
+}
+
+TEST(match_braces, findSimpleMatchWithMiddleChars)
+{
+	CHECK_TRUE(bracesComplete("[adb]"));
+}
+
+TEST(match_braces, findSimpleMatchWithCharsAtEnd)
+{
+	CHECK_TRUE(bracesComplete("[adb]sdf"));
+}
+
+TEST(match_braces, findSimpleMatchWithCharsAtBeginning)
+{
+	CHECK_TRUE(bracesComplete("jk[adb]"));
+}
+
+TEST(match_braces, findMultipleMatches)
+{
+	CHECK_TRUE(bracesComplete("{[]}"));
+}
+
+TEST(match_braces, interleavedBracesDoNotMatch)
+{
+	CHECK_TRUE(bracesComplete("{[}]"));
+}

@@ -39,7 +39,6 @@ const char* findOpenCandidate(const char *srcStr)
 		return (const char *)NULL;
 
 	length = strlen(srcStr);
-	fprintf(stderr, "srcStr: %s, length = %zd\n", srcStr, length);
 	while(--length > 0 && *srcStr != '\0') {
 		if (isCandidateOpen(*srcStr)) {
 			return srcStr;
@@ -52,31 +51,28 @@ const char* findOpenCandidate(const char *srcStr)
 /* input {[]] */
 /* input {[]} */
 /* input jfkd{ */
-/* input jfkd{ */
 bool bracesComplete(const char *string) {
     size_t length = strlen(string);
-    int matchFound = false;
+    bool matchFound = false;
     const char *start = string;
     const char *end = &string[length-1];
-    while (start != end) {
-        matchFound = true;
-        if (isCandidateOpen(*start)) {
-            matchFound = false;
-            while (end != start) {
-                matchFound = isCandidateClose(*start, *end);
-                if (matchFound) {
-                    end--;
-                    start++;
-                } else {
-                    end--;
-                }
+    while ((start = findOpenCandidate(start)) != (const char *)NULL)
+    {
+    	if (start == end)
+    		break;
+        while (end > start) {
+            matchFound = isCandidateClose(*start, *end);
+            if (matchFound) {
+            	fprintf(stderr, "Found match for %c\n", *start);
+                end--;
+                start++;
+                break;
+            } else {
+                end--;
             }
-            start++;
-            // Did not find a match, can just exit out.
-            if (!matchFound)
-                return (false);
         }
-        start++;
+        if (matchFound == false)
+        	break;
     }
     return(matchFound);
 }
