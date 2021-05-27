@@ -7,6 +7,7 @@
 
 
 #include <stdio.h>
+#include <inttypes.h>
 #include <stdbool.h>
 #include <string.h>
 
@@ -21,7 +22,6 @@ bool isCandidateOpen(char c) {
 }
 
 bool isCandidateClose(char matchTo, char candidate) {
-
     switch(matchTo) {
         case '{':
             if (candidate == '}') return true;
@@ -58,12 +58,13 @@ bool bracesComplete(const char *string) {
     const char *end = &string[length-1];
     while ((start = findOpenCandidate(start)) != (const char *)NULL)
     {
+    	matchFound = false;
     	if (start == end)
     		break;
         while (end > start) {
             matchFound = isCandidateClose(*start, *end);
             if (matchFound) {
-            	fprintf(stderr, "Found match for %c\n", *start);
+            	// fprintf(stderr, "Match found for 0x%" PRIxPTR " 0x%" PRIxPTR "\n", start, end);
                 end--;
                 start++;
                 break;

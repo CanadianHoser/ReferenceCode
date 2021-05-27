@@ -83,6 +83,11 @@ TEST(match_braces, findSimpleMatch)
 	CHECK_TRUE(bracesComplete("{}"));
 }
 
+TEST(match_braces, findNoMatchInMiddle)
+{
+	CHECK_FALSE(bracesComplete("{{}"));
+}
+
 TEST(match_braces, findNoMatch)
 {
 	CHECK_FALSE(bracesComplete("{jk"));
@@ -110,5 +115,5 @@ TEST(match_braces, findMultipleMatches)
 
 TEST(match_braces, interleavedBracesDoNotMatch)
 {
-	CHECK_TRUE(bracesComplete("{[}]"));
+	CHECK_FALSE(bracesComplete("{[}]"));
 }
