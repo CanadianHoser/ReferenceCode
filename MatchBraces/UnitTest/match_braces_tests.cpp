@@ -38,39 +38,29 @@ TEST(match_braces, cannotFindOpenCandidateInStringWithNoBraces)
 	CHECK_FALSE(isCandidateOpen(*test));
 }
 
-TEST(match_braces, cannotFindNextOpenCandidateIfSourceIsNull)
+TEST(match_braces, noOpenCandidateIfStringIsNull)
 {
-	const char *test = nullptr;
-    STRCMP_EQUAL(nullptr, findOpenCandidate(test));
+    STRCMP_EQUAL(nullptr, findOpenCandidate(nullptr));
 }
 
-TEST(match_braces, cannotFindNextOpenCandidateForEmptyString)
+TEST(match_braces, noOpenCandidateForEmptyString)
 {
-	const char *test = "";
-    STRCMP_EQUAL(nullptr, findOpenCandidate(test));
+    STRCMP_EQUAL(nullptr, findOpenCandidate(""));
 }
 
 TEST(match_braces, canFindNextOpenCandidateAtStartOfString)
 {
-	const char *test="{jfkd";
-    STRCMP_EQUAL(test, findOpenCandidate(test));
+    STRCMP_EQUAL("{jfkd", findOpenCandidate("{jfkd"));
 }
 
 TEST(match_braces, canFindNextOpenCandidateInMiddleOfString)
 {
-	const char *test="jf{kd";
-    STRCMP_EQUAL("{kd", findOpenCandidate(test));
+    STRCMP_EQUAL("{kd", findOpenCandidate("jf{kd"));
 }
 
 TEST(match_braces, shouldNotFindOpenCandidateAtEndOfString)
 {
-	const char *test="jfkd{";
-    STRCMP_EQUAL(nullptr, findOpenCandidate(test));
-}
-
-TEST(match_braces, noOpenCandidateIfStringIsNull)
-{
-    STRCMP_EQUAL(nullptr, findOpenCandidate(nullptr));
+    STRCMP_EQUAL(nullptr, findOpenCandidate("jfkd{"));
 }
 
 TEST(match_braces, findSimpleMatch)
