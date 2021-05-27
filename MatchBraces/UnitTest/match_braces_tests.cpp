@@ -26,16 +26,22 @@ TEST_GROUP(match_braces)
     }
 };
 
-TEST(match_braces, findOpenCandidateInStringWithBraces)
+TEST(match_braces, isOpenCandidateInStringStartingWithBrace)
 {
 	const char *test="{jfkd";
 	CHECK_TRUE(isCandidateOpen(*test));
 }
 
-TEST(match_braces, cannotFindOpenCandidateInStringWithNoBraces)
+TEST(match_braces, notOpenCandidateInStringStartingWithCharacter)
 {
 	const char *test="jfkd";
 	CHECK_FALSE(isCandidateOpen(*test));
+}
+
+TEST(match_braces, cannotFindOpenCandidateInStringWithOnlyASingleBrace)
+{
+	const char *test="[";
+	CHECK_FALSE(findOpenCandidate(test));
 }
 
 TEST(match_braces, noOpenCandidateIfStringIsNull)

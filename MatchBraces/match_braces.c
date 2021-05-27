@@ -56,22 +56,21 @@ const char* findOpenCandidate(const char *srcStr)
 bool bracesComplete(const char *string) {
     size_t length = strlen(string);
     bool matchFound = true;
-    const char *start = string;
-    const char *end = &string[length-1];
-    while ((start = findOpenCandidate(start)) != NULL)
+    const char *currentCandidate = string;
+    const char *charToCheck = &string[length-1];
+    while ((currentCandidate = findOpenCandidate(currentCandidate)) != NULL)
     {
     	matchFound = false;
-    	if (start == end)
+    	if (currentCandidate == charToCheck)
     		break;
-        while (end > start) {
-            matchFound = isMatchingCandidate(*start, *end);
+        while (charToCheck > currentCandidate) {
+            matchFound = isMatchingCandidate(*currentCandidate, *charToCheck);
             if (matchFound) {
-            	// fprintf(stderr, "Match found for 0x%" PRIxPTR " 0x%" PRIxPTR "\n", start, end);
-                end--;
-                start++;
+                charToCheck--;
+                currentCandidate++;
                 break;
             } else {
-                end--;
+                charToCheck--;
             }
         }
         if (matchFound == false)
