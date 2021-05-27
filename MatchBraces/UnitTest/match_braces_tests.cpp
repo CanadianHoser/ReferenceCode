@@ -26,24 +26,19 @@ TEST_GROUP(match_braces)
     }
 };
 
-TEST(match_braces, testHarness)
-{
-	LONGS_EQUAL(2,2);
-}
-
-TEST(match_braces, findOpenCandidate)
+TEST(match_braces, findOpenCandidateInStringWithBraces)
 {
 	const char *test="{jfkd";
 	CHECK_TRUE(isCandidateOpen(*test));
 }
 
-TEST(match_braces, cannotFindOpenCandidate)
+TEST(match_braces, cannotFindOpenCandidateInStringWithNoBraces)
 {
 	const char *test="jfkd";
 	CHECK_FALSE(isCandidateOpen(*test));
 }
 
-TEST(match_braces, cannotFindNextOpenCandidate)
+TEST(match_braces, cannotFindNextOpenCandidateIfSourceIsNull)
 {
 	const char *test = nullptr;
     STRCMP_EQUAL(nullptr, findOpenCandidate(test));
