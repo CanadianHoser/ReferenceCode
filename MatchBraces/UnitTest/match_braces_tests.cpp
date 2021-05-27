@@ -11,7 +11,7 @@
 extern "C" {
     extern bool bracesComplete(const char *string);
 	extern bool isCandidateOpen(char c);
-	extern bool isCandidateClose(char matchTo, char candidate);
+	extern bool isMatchingCandidate(char matchTo, char candidate);
 	extern const char *findOpenCandidate(const char *string);
 }
 
@@ -116,4 +116,9 @@ TEST(match_braces, findMultipleMatches)
 TEST(match_braces, interleavedBracesDoNotMatch)
 {
 	CHECK_FALSE(bracesComplete("{[}]"));
+}
+
+TEST(match_braces, noBracesInStringShouldMatch)
+{
+	CHECK_TRUE(bracesComplete("abcd"));
 }

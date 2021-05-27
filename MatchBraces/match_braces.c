@@ -1,6 +1,8 @@
 /*
  * match_braces.c
  *
+ * Ensure all braces have a match.  Braces need to have a matching close brace before
+ *
  *  Created on: May 27, 2021
  *      Author: whein
  */
@@ -21,7 +23,7 @@ bool isCandidateOpen(char c) {
     }
 }
 
-bool isCandidateClose(char matchTo, char candidate) {
+bool isMatchingCandidate(char matchTo, char candidate) {
     switch(matchTo) {
         case '{':
             if (candidate == '}') return true;
@@ -53,16 +55,16 @@ const char* findOpenCandidate(const char *srcStr)
 /* input jfkd{ */
 bool bracesComplete(const char *string) {
     size_t length = strlen(string);
-    bool matchFound = false;
+    bool matchFound = true;
     const char *start = string;
     const char *end = &string[length-1];
-    while ((start = findOpenCandidate(start)) != (const char *)NULL)
+    while ((start = findOpenCandidate(start)) != NULL)
     {
     	matchFound = false;
     	if (start == end)
     		break;
         while (end > start) {
-            matchFound = isCandidateClose(*start, *end);
+            matchFound = isMatchingCandidate(*start, *end);
             if (matchFound) {
             	// fprintf(stderr, "Match found for 0x%" PRIxPTR " 0x%" PRIxPTR "\n", start, end);
                 end--;
