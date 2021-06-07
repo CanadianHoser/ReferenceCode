@@ -9,10 +9,10 @@ Note that read4() has its own file pointer, much like FILE *fp in C.
 
 Definition of read4:
 
-    Parameter:  char[] buf
+    Parameter:  char[] read4_buffer
     Returns:    int
 
-Note: buf[] is destination not source, the results from read4 will be copied to buf[]
+Note: read4_buffer[] is destination not source, the results from read4 will be copied to buf[]
 Below is a high level example of how read4 works:
 
 File file("abcdefghijk"); // File is "abcdefghijk", initially file pointer (fp) points to 'a'
