@@ -63,7 +63,7 @@ buf_read(buf, 1); // We have reached the end of file, no more characters can be 
 #include <stdint.h>
 #include <string.h>
 
-static char last_read[4];
+static char read4_buffer[4];
 static unsigned int chars_remaining_in_read4_buffer = 0;
 static unsigned int read4_count = 0;
 extern unsigned int read4(char *);
@@ -80,24 +80,24 @@ unsigned int buf_read(char* buff, unsigned int chars_to_read)
   // Account for any remaining characters from previous read
   if (chars_remaining_in_read4_buffer) {
     accumulated_read_count = (chars_to_read >= chars_remaining_in_read4_buffer) ? chars_remaining_in_read4_buffer : chars_to_read;
-    memcpy(buff, &last_read[read4_count-chars_remaining_in_read4_buffer], accumulated_read_count);;
+    memcpy(buff, &read4_buffer[read4_count-chars_remaining_in_read4_buffer], accumulated_read_count);;
     chars_remaining_in_read4_buffer-=chars_to_read;
     chars_to_read -= accumulated_read_count;
   }
 
   while (chars_to_read > 0) {
-    read4_count = read4(last_read);
+    read4_count = read4(read4_buffer);
     chars_remaining_in_read4_buffer = read4_count;
     if (chars_to_read < read4_count) {
-      memcpy(&buff[accumulated_read_count], last_read, chars_to_read);
+      memcpy(&buff[accumulated_read_count], read4_buffer, chars_to_read);
       chars_remaining_in_read4_buffer -= chars_to_read;
-      accumulated_read_count+=chars_to_read;
+      accumulated_read_count += chars_to_read;
       chars_to_read = 0;
     } else {
-      memcpy(&buff[accumulated_read_count], last_read, read4_count);
+      memcpy(&buff[accumulated_read_count], read4_buffer, read4_count);
       chars_remaining_in_read4_buffer = 0;
-      accumulated_read_count+=read4_count;
-      chars_to_read-=read4_count;
+      accumulated_read_count += read4_count;
+      chars_to_read -= read4_count;
       if (read4_count<4)
         break;
     }
