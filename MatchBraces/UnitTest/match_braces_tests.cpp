@@ -113,3 +113,13 @@ TEST(match_braces, noBracesInStringShouldMatch)
 {
 	CHECK_TRUE(bracesComplete("abcd"));
 }
+
+TEST(match_braces, emptyStringShouldMatch)
+{
+	CHECK_TRUE(bracesComplete(""));
+}
+
+TEST(match_braces, nullStringShouldMatch)
+{
+	CHECK_TRUE(bracesComplete(nullptr));
+}
