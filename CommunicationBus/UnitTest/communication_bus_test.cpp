@@ -1,5 +1,8 @@
 //
-//  communication_bus_tests.cpp
+// communication_bus_tests.cpp
+//
+// These tests make use of CppUTest to execute: http://cpputest.github.io
+// See the FFF framework for the execution/declaration of fakes: https://github.com/meekrosoft/fff
 //
 
 #include <stdlib.h>
@@ -12,23 +15,8 @@ DEFINE_FFF_GLOBALS;
 
 extern "C" {
 #include "communication_bus.h"
+#include "communication_bus_mocks.h"
 }
-
-extern "C" {
-
-    FAKE_VOID_FUNC(HAL_BUSx_Statehandler, busname_t *);
-    FAKE_VALUE_FUNC(uint8_t, HAL_BUSx_GetRxCount, busname_t *);
-    FAKE_VOID_FUNC_VARARG(magicPrintf, const char *, ...);
-    FAKE_VALUE_FUNC(bool, xTaskWait, uint32_t, uint32_t);
-    FAKE_VOID_FUNC(xTaskSignal, uint32_t);
-
-    FAKE_VALUE_FUNC(uint8_t, HAL_BUSx_GetBytes, busname_t *, uint8_t *, uint8_t);
-
-    uint8_t fake_HAL_BUSx_GetBytes(busname_t *bus, uint8_t *buf, uint8_t bytesToRead);
-    void addCharsToBuffer(const char *bufData);
-    void initBytesBuffer(void);
-}
-
 
 TEST_GROUP(comm_bus)
 {
@@ -47,12 +35,7 @@ TEST_GROUP(comm_bus)
     }
 };
 
-TEST(comm_bus, check_operation)
-{
-	LONGS_EQUAL(3,3);
-}
-
-TEST(comm_bus, fake_getBytes_returns_bytes_added_to_buffer)
+TEST(comm_bus, fake_getBytes_returns_count_of_bytes_added_to_buffer)
 {
     uint8_t byteCount;
     uint8_t myBuf[16] = {0};
