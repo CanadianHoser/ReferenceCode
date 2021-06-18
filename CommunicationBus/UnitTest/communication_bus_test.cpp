@@ -28,6 +28,8 @@ TEST_GROUP(comm_bus)
         bufEnd = buffer;
         initBytesBuffer();
         bzero(buffer, BUFSIZE);
+        magicPrintf_fake.custom_fake = fake_magicPrintf;
+        disable_magicPrintf();
     }
 
     void teardown() override
@@ -58,8 +60,10 @@ TEST(comm_bus, multiple_irq_handler_calls_does_not_overwrite_any_unhandled_entri
     addCharsToBuffer("abcdef");
     HAL_BUSx_GetRxCount_fake.return_val = 3;
     BUS0_IRQHandler();
+    // buffer: 'a' 'b', 'c', '\0'
     HAL_BUSx_GetRxCount_fake.return_val = 3;
     BUS0_IRQHandler();
+    // buffer: 'a' 'b', 'c', '\0', 'd', 'e', 'f', '\0'
     STRCMP_EQUAL("abc", (char *)&buffer[0]);
     CHECK_TRUE('\0' == buffer[3]);
     STRCMP_EQUAL("def", (char *)&buffer[4]);
@@ -75,4 +79,20 @@ TEST(comm_bus, printBuffer_in_userSpace_updates_read_pointer)
     // Buffer has data in it, now read
     printBuffer();
     POINTERS_EQUAL(&buffer[4], bufStart);
+}
+
+TEST(comm_bus, interleaving_printBuffer_only_prints_last_read)
+{
+    addCharsToBuffer("abcdef");
+    HAL_BUSx_GetRxCount_fake.return_val = 3;
+    BUS0_IRQHandler();
+    // buffer: 'a' 'b', 'c', '\0'
+    POINTERS_EQUAL(&buffer[4], bufEnd);
+    POINTERS_EQUAL(&buffer[0], bufStart);
+    printBuffer();
+    HAL_BUSx_GetRxCount_fake.return_val = 3;
+    BUS0_IRQHandler();
+    printBuffer();
+    STRCMP_EQUAL("def", outputBuffer);
+    POINTERS_EQUAL(bufStart, bufEnd);
 }

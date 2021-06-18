@@ -12,16 +12,21 @@
 #include <stdbool.h>
 #include "communication_bus.h"
 
-    FAKE_VOID_FUNC(HAL_BUSx_Statehandler, busname_t *);
-    FAKE_VALUE_FUNC(uint8_t, HAL_BUSx_GetRxCount, busname_t *);
-    FAKE_VOID_FUNC_VARARG(magicPrintf, const char *, ...);
-    FAKE_VALUE_FUNC(bool, xTaskWait, uint32_t, uint32_t);
-    FAKE_VOID_FUNC(xTaskSignal, uint32_t);
-    FAKE_VALUE_FUNC(uint8_t, HAL_BUSx_GetBytes, busname_t *, uint8_t *, uint8_t);
+FAKE_VOID_FUNC(HAL_BUSx_Statehandler, busname_t *);
+FAKE_VALUE_FUNC(uint8_t, HAL_BUSx_GetRxCount, busname_t *);
+FAKE_VOID_FUNC_VARARG(magicPrintf, const char *, ...);
+FAKE_VALUE_FUNC(bool, xTaskWait, uint32_t, uint32_t);
+FAKE_VOID_FUNC(xTaskSignal, uint32_t);
+FAKE_VALUE_FUNC(uint8_t, HAL_BUSx_GetBytes, busname_t *, uint8_t *, uint8_t);
 
-    uint8_t fake_HAL_BUSx_GetBytes(busname_t *bus, uint8_t *buf, uint8_t bytesToRead);
-    void addCharsToBuffer(const char *bufData);
-    void initBytesBuffer(void);
+uint8_t fake_HAL_BUSx_GetBytes(busname_t *bus, uint8_t *buf, uint8_t bytesToRead);
+void addCharsToBuffer(const char *bufData);
+void initBytesBuffer(void);
+
+extern char outputBuffer[BUFSIZE];
+void enable_magicPrintf(void);
+void disable_magicPrintf(void);
+void fake_magicPrintf(const char *format, va_list args);
 
 
 
