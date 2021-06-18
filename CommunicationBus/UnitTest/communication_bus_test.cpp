@@ -14,6 +14,8 @@ extern "C" {
 #include "communication_bus.h"
 }
 static uint8_t getBytesBuffer[BUFSIZE];
+static uint8_t *getBytesBufEnd;
+static uint8_t *getBytesBufStart;
 
 extern "C" {
 extern busname_t BUS0;
@@ -28,10 +30,12 @@ extern uint8_t *bufStart;
     FAKE_VOID_FUNC(xTaskSignal, uint32_t);
 
 	FAKE_VALUE_FUNC(uint8_t, HAL_BUSx_GetBytes, busname_t *, uint8_t *, uint8_t);
+
+    uint8_t fake_HAL_BUSx_GetBytes(busname_t *bus, uint8_t *buf, uint8_t bytesToRead);
     uint8_t fake_HAL_BUSx_GetBytes(busname_t *bus, uint8_t *buf, uint8_t bytesToRead) {
         uint8_t count = 0;
-        while(*bufStart!='\0' && (bytesToRead--)) {
-        	*buf++ = *bufStart++;
+        while(*getBytesBufStart!='\0' && (bytesToRead--)) {
+        	*buf++ = *getBytesBufStart++;
         	count++;
         }
         return count;
@@ -45,9 +49,10 @@ TEST_GROUP(comm_bus)
     {
     	FFF_RESET_HISTORY();
         HAL_BUSx_GetBytes_fake.custom_fake = fake_HAL_BUSx_GetBytes;
-        buffer[0] = '\0';
         bufStart = buffer;
         bufEnd = buffer;
+        getBytesBufStart = getBytesBuffer;
+        getBytesBufEnd = getBytesBuffer;
         bzero(buffer, BUFSIZE);
         bzero(getBytesBuffer, BUFSIZE);
     }
@@ -56,10 +61,11 @@ TEST_GROUP(comm_bus)
     {
     }
 
+    // This is to simulate the datastream used by HAL_BUSx_GetBytes
     void addCharsToBuffer(const char *bufData)
     {
         while (*bufData != '\0') {
-        	*bufEnd++ = (uint8_t)*bufData++;
+        	*getBytesBufEnd++ = (uint8_t)*bufData++;
         }
     }
 };
@@ -85,4 +91,16 @@ TEST(comm_bus, irq_handler_adds_bytes_to_buffer)
     HAL_BUSx_GetRxCount_fake.return_val = 3;
     BUS0_IRQHandler();
     STRCMP_EQUAL("abc", (char *)buffer);
+}
+
+TEST(comm_bus, multiple_irq_handler_calls_does_not_overwrite_any_unhandled_entries)
+{
+    addCharsToBuffer("abcdef");
+    HAL_BUSx_GetRxCount_fake.return_val = 3;
+    BUS0_IRQHandler();
+    HAL_BUSx_GetRxCount_fake.return_val = 3;
+    BUS0_IRQHandler();
+    STRCMP_EQUAL("abc", (char *)&buffer[0]);
+    CHECK_TRUE('\0' == buffer[3]);
+    STRCMP_EQUAL("def", (char *)&buffer[4]);
 }
