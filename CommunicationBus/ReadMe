@@ -1,0 +1,1 @@
+See UnitTest directory for the associated test code.  Run by "make" within this directory.  CppUTest and FFF submodules must be installed.
