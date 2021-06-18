@@ -1,1 +1,4 @@
-See UnitTest directory for the associated test code.  Run by "make" within this directory.  CppUTest and FFF submodules must be installed.
+See UnitTest directory for the associated test code.  Run by calling "make" within this directory.  CppUTest and FFF submodules must be installed.
+Unit Tests were mainly developed to test faking out production code, and how to test text output without having to manually parse the screen.
+
+The code developed in the production code is under BUS0_IRQHandler and vTaskBus0.  Some reformatting and shifting around of functions were made.
