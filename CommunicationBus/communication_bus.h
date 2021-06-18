@@ -17,6 +17,13 @@ typedef int busname_t;
 #define DATAREADY 1
 #define TIMEOUT 50
 
+#ifdef UNIT_TEST
+extern busname_t BUS0;
+extern uint8_t buffer[BUFSIZE];
+extern uint8_t *bufEnd;
+extern uint8_t *bufStart;
+#endif
+
 //////////////////////////
 // TASK API
 
@@ -38,6 +45,7 @@ void magicPrintf( const char * format, ... );
 void printBuffer(void);
 
 void BUS0_IRQHandler(void);
+void vTaskBus0( void * pvParameters ) __attribute__((noreturn));
 
 
 #endif /* COMMUNICATIONBUS_COMMUNICATION_BUS_H_ */

@@ -47,19 +47,19 @@ void BUS0_IRQHandler(void){
     uint8_t byteCount;
     uint8_t bytesSaved;
     
-    byteCount = HAL_BUSx_GetRxCount(BUS0);
+    byteCount = HAL_BUSx_GetRxCount(&BUS0);
     if (byteCount) {
-        bytesSaved = HAL_BUSx_GetBytes(BUS0, bufEnd, byteCount);
+        bytesSaved = HAL_BUSx_GetBytes(&BUS0, bufEnd, byteCount);
         buffer[bytesSaved] ='\0';
         bufEnd += bytesSaved+1;
         xTaskSignal(DATAREADY);
     }
-    HAL_BUSx_Statehandler(BUS0);
+    HAL_BUSx_Statehandler(&BUS0);
 }
 
 void printBuffer(void) {
 	uint8_t *localBufEnd = bufEnd;
-	magicPrintf(bufStart);
+	magicPrintf((char *)bufStart);
 	bufStart = localBufEnd;
 	return ;
 }

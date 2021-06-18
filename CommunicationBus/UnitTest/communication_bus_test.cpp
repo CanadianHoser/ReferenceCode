@@ -13,33 +13,20 @@ DEFINE_FFF_GLOBALS;
 extern "C" {
 #include "communication_bus.h"
 }
-static uint8_t getBytesBuffer[BUFSIZE];
-static uint8_t *getBytesBufEnd;
-static uint8_t *getBytesBufStart;
 
 extern "C" {
-extern busname_t BUS0;
-extern uint8_t buffer[BUFSIZE];
-extern uint8_t *bufEnd;
-extern uint8_t *bufStart;
 
-	FAKE_VOID_FUNC(HAL_BUSx_Statehandler, busname_t *);
-	FAKE_VALUE_FUNC(uint8_t, HAL_BUSx_GetRxCount, busname_t *);
+    FAKE_VOID_FUNC(HAL_BUSx_Statehandler, busname_t *);
+    FAKE_VALUE_FUNC(uint8_t, HAL_BUSx_GetRxCount, busname_t *);
     FAKE_VOID_FUNC_VARARG(magicPrintf, const char *, ...);
     FAKE_VALUE_FUNC(bool, xTaskWait, uint32_t, uint32_t);
     FAKE_VOID_FUNC(xTaskSignal, uint32_t);
 
-	FAKE_VALUE_FUNC(uint8_t, HAL_BUSx_GetBytes, busname_t *, uint8_t *, uint8_t);
+    FAKE_VALUE_FUNC(uint8_t, HAL_BUSx_GetBytes, busname_t *, uint8_t *, uint8_t);
 
     uint8_t fake_HAL_BUSx_GetBytes(busname_t *bus, uint8_t *buf, uint8_t bytesToRead);
-    uint8_t fake_HAL_BUSx_GetBytes(busname_t *bus, uint8_t *buf, uint8_t bytesToRead) {
-        uint8_t count = 0;
-        while(*getBytesBufStart!='\0' && (bytesToRead--)) {
-        	*buf++ = *getBytesBufStart++;
-        	count++;
-        }
-        return count;
-    }
+    void addCharsToBuffer(const char *bufData);
+    void initBytesBuffer(void);
 }
 
 
@@ -51,22 +38,12 @@ TEST_GROUP(comm_bus)
         HAL_BUSx_GetBytes_fake.custom_fake = fake_HAL_BUSx_GetBytes;
         bufStart = buffer;
         bufEnd = buffer;
-        getBytesBufStart = getBytesBuffer;
-        getBytesBufEnd = getBytesBuffer;
+        initBytesBuffer();
         bzero(buffer, BUFSIZE);
-        bzero(getBytesBuffer, BUFSIZE);
     }
 
     void teardown() override
     {
-    }
-
-    // This is to simulate the datastream used by HAL_BUSx_GetBytes
-    void addCharsToBuffer(const char *bufData)
-    {
-        while (*bufData != '\0') {
-        	*getBytesBufEnd++ = (uint8_t)*bufData++;
-        }
     }
 };
 
@@ -75,7 +52,7 @@ TEST(comm_bus, check_operation)
 	LONGS_EQUAL(3,3);
 }
 
-TEST(comm_bus, getBytes_returns_bytes_added_to_buffer)
+TEST(comm_bus, fake_getBytes_returns_bytes_added_to_buffer)
 {
     uint8_t byteCount;
     uint8_t myBuf[16] = {0};
