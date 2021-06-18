@@ -57,7 +57,12 @@ void BUS0_IRQHandler(void){
     HAL_BUSx_Statehandler(BUS0);
 }
 
-
+void printBuffer(void) {
+	uint8_t *localBufEnd = bufEnd;
+	magicPrintf(bufStart);
+	bufStart = localBufEnd;
+	return ;
+}
 
 //////////////////////////
 // User Code Below
@@ -69,10 +74,7 @@ void vTaskBus0( void * pvParameters )
     for (;;) {
         if (xTaskWait(DATAREADY, TIMEOUT))
         {
-            // Race condition if just reset bufEnd
-            uint8_t localBufEnd = bufEnd;
-            magicPrintf(bufStart);
-            bufStart = localBufEnd;
+			printBuffer();
         }
     }
 }

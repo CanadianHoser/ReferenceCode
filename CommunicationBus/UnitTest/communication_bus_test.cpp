@@ -104,3 +104,15 @@ TEST(comm_bus, multiple_irq_handler_calls_does_not_overwrite_any_unhandled_entri
     CHECK_TRUE('\0' == buffer[3]);
     STRCMP_EQUAL("def", (char *)&buffer[4]);
 }
+
+TEST(comm_bus, printBuffer_in_userSpace_updates_read_pointer)
+{
+    addCharsToBuffer("abcdef");
+    HAL_BUSx_GetRxCount_fake.return_val = 3;
+    BUS0_IRQHandler();
+    POINTERS_EQUAL(&buffer[4], bufEnd);
+    POINTERS_EQUAL(&buffer[0], bufStart);
+    // Buffer has data in it, now read
+    printBuffer();
+    POINTERS_EQUAL(&buffer[4], bufStart);
+}

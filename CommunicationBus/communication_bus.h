@@ -35,6 +35,7 @@ void xTaskSignal(uint32_t xSignal);
 
 // Like the standard printf
 void magicPrintf( const char * format, ... );
+void printBuffer(void);
 
 void BUS0_IRQHandler(void);
 
